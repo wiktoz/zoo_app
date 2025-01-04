@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <!-- AppBar z Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -14,35 +15,47 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:title="Main View"
+            app:title="Grupy"
             app:titleTextColor="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Główna zawartość -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Search bar -->
-        <EditText
-            android:id="@+id/searchEditText"
+        <!-- Pasek wyszukiwania -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Szukaj"
-            android:padding="8dp"
-            android:drawableEnd="@android:drawable/ic_menu_search"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-        <!-- RecyclerView for groups -->
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Wyszukaj grupę"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/ic_menu_search"
+                android:background="@null"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- RecyclerView dla listy grup -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:padding="4dp"
+            android:scrollbars="vertical" />
 
     </LinearLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
