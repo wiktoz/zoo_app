@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 public interface ApiEndpoint {
 
     @POST("auth/register")
-    Call<ApiResponse> register(@Body RegisterRequest request);
+    Call<RegisterResponse> register(@Body RegisterRequest request);
 
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);

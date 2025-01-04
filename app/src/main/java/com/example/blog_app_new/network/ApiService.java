@@ -22,7 +22,6 @@ public class ApiService {
 
     private ApiService() {
 
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
                     @Override

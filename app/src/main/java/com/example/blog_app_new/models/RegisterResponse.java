@@ -1,13 +1,12 @@
 package com.example.blog_app_new.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class RegisterResponse {
-    private String message;
 
-    public RegisterResponse(String message) {
-        this.message = message;
-    }
+    @SerializedName("message")
+    @Expose
+    public String message;
 
-    public String getMessage() {
-        return message;
-    }
 }
