@@ -1,8 +1,10 @@
 package com.example.blog_app_new;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,16 @@ public class RegisterActivity extends AppCompatActivity {
         EditText editTextPassword = findViewById(R.id.editTextPassword);
         EditText editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
         Button buttonRegister = findViewById(R.id.buttonRegister);
+
+
+
+        TextView textViewLogin = findViewById(R.id.textViewLogin);
+
+        // Navigate to RegisterActivity
+        textViewLogin.setOnClickListener(v -> {
+            finish();
+        });
+
 
         buttonRegister.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();

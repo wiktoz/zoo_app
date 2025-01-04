@@ -38,6 +38,16 @@
             android:layout_height="wrap_content"
             android:text="Zarejestruj"
             android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masz już konto? Zaloguj się"
+            android:textColor="@color/teal_700"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

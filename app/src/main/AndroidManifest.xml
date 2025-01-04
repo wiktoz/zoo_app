@@ -31,8 +31,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Forgot Password Activity -->
-        <activity android:name=".ForgotPasswordActivity" />
 
         <!-- Register Activity -->
         <activity android:name=".RegisterActivity" />

@@ -23,14 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Find views
-        TextView textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
         TextView textViewRegister = findViewById(R.id.textViewRegister);
-
-        // Navigate to ForgotPasswordActivity
-        textViewForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
 
         // Navigate to RegisterActivity
         textViewRegister.setOnClickListener(v -> {
@@ -46,25 +39,26 @@ public class LoginActivity extends AppCompatActivity {
             String username = editTextUsername.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
 
-            // Simulate authentication (replace with real authentication logic)
             if (username.equals("user") && password.equals("password")) {
-                // Authentication successful
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
-                finish(); // Close LoginActivity so user can't go back to it
+                finish();
             } else {
                 // Authentication failed
                 Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Force `isLoggedIn` to false for development
         SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("isLoggedIn", false);
-        editor.apply();
+        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+        if (isLoggedIn) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
-        // Always show the login screen
-        // If you need to disable this for production, remove the line above
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.apply();
     }
 }
