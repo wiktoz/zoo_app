@@ -11,6 +11,21 @@
         android:padding="16dp"
         android:gravity="center">
 
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextSurname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Surname"
+            android:inputType="textPersonName" />
+
         <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"

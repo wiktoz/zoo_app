@@ -35,7 +35,11 @@ android {
 }
 
 dependencies {
-
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")  // For API calls
+    implementation("com.google.code.gson:gson:2.10")        // For JSON parsing
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")  // For lifecycle-aware components
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")  // For logging network requests
+    implementation("com.squareup.retrofit2:converter-gson:2.0.0-beta4")  // For network requests
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

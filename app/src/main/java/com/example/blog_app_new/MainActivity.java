@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
+import com.example.blog_app_new.network.ApiService;
+import com.example.blog_app_new.network.TokenManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -35,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup toolbar
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        TokenManager.getInstance(this);
+
 
         // Clear SharedPreferences for testing purposes
         clearLoginStatus();
