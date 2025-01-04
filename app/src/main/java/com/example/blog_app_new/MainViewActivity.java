@@ -1,42 +1,74 @@
 package com.example.blog_app_new;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainViewActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainViewActivity";
+    private RecyclerView groupsRecyclerView;
+    private List<Group> groups = new ArrayList<>();
+    private GroupsAdapter groupsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_view); // Nowy XML dla głównego widoku
+        setContentView(R.layout.activity_main_view);
 
-        // Setup toolbar or any other initialization logic here
-        checkIfLoggedIn();
+        // Initialize RecyclerView
+        groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
+        groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Load groups from JSON
+        loadGroupsFromJson();
+
+        // Set Adapter
+        groupsAdapter = new GroupsAdapter(groups);
+        groupsRecyclerView.setAdapter(groupsAdapter);
     }
 
-    private void checkIfLoggedIn() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
+    private void loadGroupsFromJson() {
+        try {
+            InputStream inputStream = getResources().openRawResource(R.raw.groups);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
 
-        if (!isLoggedIn) {
-            // Redirect to MainActivity (Login)
-            Log.d(TAG, "User is not logged in. Redirecting to MainActivity...");
-            Intent intent = new Intent(MainViewActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+
+            reader.close();
+            inputStream.close();
+
+            // Parse JSON
+            JSONArray jsonArray = new JSONArray(jsonBuilder.toString());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name = jsonObject.getString("name");
+                String description = jsonObject.getString("description");
+                groups.add(new Group(name, description));
+            }
+
+            // Log loaded groups
+            for (Group group : groups) {
+                Log.d("MainViewActivity", "Group: " + group.getName() + ", Description: " + group.getDescription());
+            }
+
+        } catch (Exception e) {
+            Log.e("MainViewActivity", "Error loading groups", e);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 }

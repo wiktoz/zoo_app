@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean validateCredentials(String username, String password) {
         // Example hardcoded credentials
-        return username.equals("x") && password.equals("xx");
+        return username.equals("x") && password.equals("x");
     }
 
     private void logInUser() {
