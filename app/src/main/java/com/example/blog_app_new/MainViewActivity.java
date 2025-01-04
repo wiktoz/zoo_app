@@ -1,74 +1,76 @@
 package com.example.blog_app_new;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewActivity extends AppCompatActivity {
 
     private RecyclerView groupsRecyclerView;
-    private List<Group> groups = new ArrayList<>();
-    private GroupsAdapter groupsAdapter;
+    private GroupsAdapter adapter;
+    private List<Group> allGroups; // Pełna lista grup
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
 
-        // Initialize RecyclerView
+        // Inicjalizacja RecyclerView
         groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Load groups from JSON
-        loadGroupsFromJson();
+        // Ładowanie grup
+        allGroups = loadGroups();
+        adapter = new GroupsAdapter(new ArrayList<>(allGroups)); // Początkowa lista to pełna lista
+        groupsRecyclerView.setAdapter(adapter);
 
-        // Set Adapter
-        groupsAdapter = new GroupsAdapter(groups);
-        groupsRecyclerView.setAdapter(groupsAdapter);
+        // Pasek wyszukiwania
+        EditText searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Nie robimy nic przed zmianą tekstu
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterGroups(s.toString()); // Filtruj listę grup na podstawie tekstu
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Nie robimy nic po zmianie tekstu
+            }
+        });
     }
 
-    private void loadGroupsFromJson() {
-        try {
-            InputStream inputStream = getResources().openRawResource(R.raw.groups);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
+    // Filtruje grupy na podstawie nazwy
+    private void filterGroups(String query) {
+        List<Group> filteredGroups = new ArrayList<>();
+        for (Group group : allGroups) {
+            if (group.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredGroups.add(group); // Dodaj grupy, które pasują do zapytania
             }
-
-            reader.close();
-            inputStream.close();
-
-            // Parse JSON
-            JSONArray jsonArray = new JSONArray(jsonBuilder.toString());
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String name = jsonObject.getString("name");
-                String description = jsonObject.getString("description");
-                groups.add(new Group(name, description));
-            }
-
-            // Log loaded groups
-            for (Group group : groups) {
-                Log.d("MainViewActivity", "Group: " + group.getName() + ", Description: " + group.getDescription());
-            }
-
-        } catch (Exception e) {
-            Log.e("MainViewActivity", "Error loading groups", e);
         }
+        adapter.updateData(filteredGroups); // Zaktualizuj dane w adapterze
+    }
+
+    // Ładowanie grup (na razie statyczne)
+    private List<Group> loadGroups() {
+        List<Group> groups = new ArrayList<>();
+        groups.add(new Group("Grupa 1", "Opis grupy 1"));
+        groups.add(new Group("Grupa 2", "Opis grupy 2"));
+        groups.add(new Group("Grupa 3", "Opis grupy 3"));
+        groups.add(new Group("Grupa testowa", "Opis testowy"));
+        return groups;
     }
 }
