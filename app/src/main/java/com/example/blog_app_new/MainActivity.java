@@ -4,99 +4,68 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.blog_app_new.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity"; // Tag for logging
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+    private static final String TAG = "MainActivity";
+
+    private EditText editTextUsername;
+    private EditText editTextPassword;
+    private Button buttonLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main); // To będzie ekran logowania
 
-        // Initialize binding
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        // Initialize views
+        editTextUsername = findViewById(R.id.editTextUsername);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        buttonLogin = findViewById(R.id.buttonLogin);
 
-        // Setup toolbar
-        setSupportActionBar(binding.appBarMain.toolbar);
+        // Set login button click listener
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
 
-        // Clear SharedPreferences for testing purposes
-        clearLoginStatus();
+                if (username.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        // Log SharedPreferences data
-        logSharedPreferences();
-
-        // Check login status and redirect if needed
-        checkLoginStatus();
+                if (validateCredentials(username, password)) {
+                    logInUser();
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    /**
-     * Clears the login status for testing purposes.
-     */
-    private void clearLoginStatus() {
+    private boolean validateCredentials(String username, String password) {
+        // Example hardcoded credentials
+        return username.equals("admin") && password.equals("admin123");
+    }
+
+    private void logInUser() {
         SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.clear(); // Remove all data from SharedPreferences
+        editor.putBoolean("isLoggedIn", true);
         editor.apply();
-        Log.d(TAG, "Login status has been cleared.");
-    }
 
-    /**
-     * Logs SharedPreferences data for debugging purposes.
-     */
-    private void logSharedPreferences() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
-        Log.d(TAG, "SharedPreferences -> isLoggedIn: " + isLoggedIn);
-    }
+        Log.d(TAG, "User logged in successfully.");
 
-    /**
-     * Checks whether the user is logged in and redirects to LoginActivity if not.
-     */
-    private void checkLoginStatus() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-
-        // Ensure the user is not logged in by default
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
-        Log.d(TAG, "Login status (default false): " + isLoggedIn);
-
-        if (!isLoggedIn) {
-            Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish(); // Close MainActivity
-        } else {
-            Log.d(TAG, "User is logged in.");
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+        // Redirect to MainViewActivity
+        Intent intent = new Intent(MainActivity.this, MainViewActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
