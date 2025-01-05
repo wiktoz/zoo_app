@@ -29,7 +29,7 @@ public interface ApiEndpoint {
     @POST("auth/token/revoke/rtoken")
     Call<ApiResponse> revokeRefreshToken();
 
-    @GET("groups")
+    @GET("groups/my")
     Call<List<Group>> getGroups();
 
     @GET("groups/{group_id}")

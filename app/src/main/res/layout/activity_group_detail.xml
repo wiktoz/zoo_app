@@ -4,31 +4,32 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="12dp"
+    android:background="@color/white"> <!-- np. lekko szary kolor tła -->
 
     <!-- Nazwa grupy -->
     <TextView
         android:id="@+id/groupNameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:paddingBottom="4dp"/>
 
     <!-- Opis grupy -->
     <TextView
         android:id="@+id/groupDescriptionTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:paddingBottom="8dp" />
 
     <!-- RecyclerView na posty w tej grupie -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="8dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp" />
 
 </LinearLayout>
