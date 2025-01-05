@@ -1,4 +1,4 @@
-package com.example.blog_app_new.models;
+package com.example.blog_app_new.networksModels;
 
 public class ApiResponse {
     private boolean success;

@@ -1,6 +1,6 @@
 package com.example.blog_app_new.network;
 
-import com.example.blog_app_new.models.*;
+import com.example.blog_app_new.networksModels.*;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

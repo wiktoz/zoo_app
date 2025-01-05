@@ -1,7 +1,6 @@
 package com.example.blog_app_new;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -11,8 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.blog_app_new.models.LoginRequest;
-import com.example.blog_app_new.models.LoginResponse;
+import com.example.blog_app_new.networksModels.LoginRequest;
+import com.example.blog_app_new.networksModels.LoginResponse;
 import com.example.blog_app_new.network.ApiService;
 import com.google.gson.Gson;
 
@@ -61,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                                 LoginResponse loginResponse = response.body();
                                 if (loginResponse != null && loginResponse.login) {
                                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
                                     finish();
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Login failed: No token received", Toast.LENGTH_SHORT).show();

@@ -1,9 +1,5 @@
 package com.example.blog_app_new.network;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.example.blog_app_new.models.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import okhttp3.Interceptor;
@@ -12,9 +8,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.io.IOException;
-import java.util.HashSet;
 
 public class ApiService {
     private static ApiService instance;

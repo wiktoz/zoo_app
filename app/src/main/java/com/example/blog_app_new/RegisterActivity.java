@@ -1,6 +1,5 @@
 package com.example.blog_app_new;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,8 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.blog_app_new.models.RegisterRequest;
-import com.example.blog_app_new.models.RegisterResponse;
+import com.example.blog_app_new.networksModels.RegisterRequest;
+import com.example.blog_app_new.networksModels.RegisterResponse;
 import com.example.blog_app_new.network.ApiService;
 import com.google.gson.Gson;
 
