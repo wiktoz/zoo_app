@@ -42,4 +42,6 @@ public interface ApiEndpoint {
 
     @GET("groups/{group_id}/posts")
     Call<List<Post>> getGroupPosts(@Path("group_id") String groupId);
+    @GET("groups/{group_id}/join")
+    Call<ApiResponse> joinGroup(@Path("group_id") String groupId);
 }

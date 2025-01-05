@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.GroupsAdapter;
 import com.example.blog_app_new.network.ApiService;
+import com.example.blog_app_new.networksModels.ApiResponse;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -53,16 +54,26 @@ public class AllGroupsActivity extends AppCompatActivity {
         allGroupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Inicjalizujemy adapter (używamy takiego samego co w MainActivity, bo wygląd itemu jest podobny)
-        allGroupsAdapter = new GroupsAdapter(new ArrayList<>(), position -> {
-            // Klik w kafelek -> przejście do szczegółów
-            Group clickedGroup = allGroups.get(position);
-            Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
+        allGroupsAdapter = new GroupsAdapter(new ArrayList<>(), new GroupsAdapter.OnGroupClickListener() {
+            @Override
+            public void onGroupClick(int position) {
+                Group clickedGroup = allGroups.get(position);
+                // przejście do szczegółów
+                Intent intent = new Intent(AllGroupsActivity.this, GroupDetailActivity.class);
+                intent.putExtra("group_id", clickedGroup.group_id);
+                startActivity(intent);
+            }
 
-            // Przykład przejścia do szczegółów
-            Intent intent = new Intent(AllGroupsActivity.this, GroupDetailActivity.class);
-            intent.putExtra("group_id", clickedGroup.group_id);
-            startActivity(intent);
-        });
+            @Override
+            public void onJoinGroupClick(int position) {
+                // Wywołanie endpointu joinGroup
+                Group groupToJoin = allGroups.get(position);
+                joinGroup(groupToJoin.group_id,0);
+            }
+        },
+                true  // <-- showJoinButton = true (przycisk widoczny)
+        );
+
 
         allGroupsRecyclerView.setAdapter(allGroupsAdapter);
 
@@ -110,6 +121,8 @@ public class AllGroupsActivity extends AppCompatActivity {
                 });
     }
 
+
+
     /**
      * Filtr tekstowy
      */
@@ -124,4 +137,33 @@ public class AllGroupsActivity extends AppCompatActivity {
         }
         allGroupsAdapter.updateData(filtered);
     }
+    private void joinGroup(String groupId, int position) {
+        // Załóżmy, że w ApiEndpoint masz:
+        // @GET("groups/{group_id}/join")
+        // Call<ApiResponse> joinGroup(@Path("group_id") String groupId);
+
+        ApiService.getInstance().getApiEndpoint().joinGroup(groupId)
+                .enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Toast.makeText(AllGroupsActivity.this,
+                                    "Dołączyłeś do grupy " + allGroups.get(position).name,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(AllGroupsActivity.this,
+                                    "Nie udało się dołączyć do grupy",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        Toast.makeText(AllGroupsActivity.this,
+                                "Błąd sieci przy dołączaniu",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

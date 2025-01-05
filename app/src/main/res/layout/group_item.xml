@@ -44,5 +44,17 @@
             android:ellipsize="end"
             android:maxLines="2" />
 
+        <TextView
+            android:id="@+id/joinGroupBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="8dp"
+            android:text="Dodaj do grupy"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_blue_dark"
+            android:clickable="true"
+            android:focusable="true" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

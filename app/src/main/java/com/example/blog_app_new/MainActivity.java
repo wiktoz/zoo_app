@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    // Pola przeniesione z MainViewActivity
+    // RecyclerView i adapter
     private RecyclerView groupsRecyclerView;
     private GroupsAdapter groupAdapter;
     private NotificationAdapter notificationAdapter;
@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ViewBinding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -71,35 +73,48 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "User is logged in.");
-        initGroupList();
-        setupNotificationButton();
 
+        // Inicjalizacja listy
+        initGroupList();
+
+        // Ewentualna obsługa przycisku do widoku "AllGroupsActivity"
         Button goToAllGroupsBtn = findViewById(R.id.goToAllGroupsBtn);
         goToAllGroupsBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, AllGroupsActivity.class));
         });
-    }
 
+        // Ewentualna obsługa powiadomień – pomijamy dla uproszczenia
+    }
 
     /**
      * Metoda łącząca logikę wyświetlania grup z layoutem (RecyclerView, EditText)
      */
     private void initGroupList() {
-        // RecyclerView
         groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Inicjalizujemy adapter z pustą listą
-        groupAdapter = new GroupsAdapter(new ArrayList<>(), position -> {
-            // Tu obsługujemy kliknięcie w grupę
-            Group clickedGroup = allGroups.get(position);
-            Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
+        // Ustawiamy adapter z pustą listą i showJoinButton = false
+        groupAdapter = new GroupsAdapter(new ArrayList<>(),
+                new GroupsAdapter.OnGroupClickListener() {
+                    @Override
+                    public void onGroupClick(int position) {
+                        // Kliknięcie w grupę -> szczegóły
+                        Group clickedGroup = allGroups.get(position);
+                        Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
 
-            // Uruchamiamy GroupDetailActivity, przekazując group_id
-            Intent intent = new Intent(MainActivity.this, GroupDetailActivity.class);
-            intent.putExtra("group_id", clickedGroup.group_id);
-            startActivity(intent);
-        });
+                        Intent intent = new Intent(MainActivity.this, GroupDetailActivity.class);
+                        intent.putExtra("group_id", clickedGroup.group_id);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onJoinGroupClick(int position) {
+                        // W MainActivity nie potrzebujemy "Dołącz do grupy"
+                        // Zostawiamy puste (lub cokolwiek chcesz)
+                    }
+                },
+                false // W tym widoku nie pokazujemy przycisku "Dołącz"
+        );
         groupsRecyclerView.setAdapter(groupAdapter);
 
         // Ładujemy grupy z API
@@ -109,43 +124,23 @@ public class MainActivity extends AppCompatActivity {
         EditText searchEditText = findViewById(R.id.searchEditText);
         searchEditText.addTextChangedListener(new android.text.TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Nie robimy nic
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterGroups(s.toString()); // Filtruj listę na podstawie wpisanego tekstu
+                filterGroups(s.toString());
             }
-
             @Override
-            public void afterTextChanged(android.text.Editable s) {
-                // Nie robimy nic
-            }
+            public void afterTextChanged(android.text.Editable s) { }
         });
     }
 
-
     /**
-     * Filtruje grupy na podstawie tekstu wyszukiwania
-     */
-    private void filterGroups(String query) {
-        List<Group> filteredGroups = new ArrayList<>();
-        for (Group group : allGroups) {
-            if (group.name.toLowerCase().contains(query.toLowerCase()) || group.description.toLowerCase().contains(query.toLowerCase())) {
-                filteredGroups.add(group);
-            }
-        }
-        groupAdapter.updateData(filteredGroups);
-    }
-
-    /**
-     * Wczytuje listę grup (na razie statycznie)
+     * Pobiera listę grup, do których user należy
      */
     private void loadGroups() {
-        // Inicjalizujemy pustą listę na wypadek braku odpowiedzi
         allGroups = new ArrayList<>();
 
+        // W Twoim ApiEndpoint pewnie jest getGroups(), które zwraca grupy usera
         ApiService.getInstance().getApiEndpoint().getGroups()
                 .enqueue(new Callback<List<Group>>() {
                     @Override
@@ -153,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             allGroups = response.body();
                             Log.d(TAG, "Groups loaded successfully: " + allGroups.size());
-                            groupAdapter.updateData(allGroups); // Aktualizujemy dane groupAdaptera po wczytaniu
+                            groupAdapter.updateData(allGroups);
                         } else {
                             Log.e(TAG, "Failed to load groups: " + response.code());
                             Toast.makeText(MainActivity.this, "Failed to load groups", Toast.LENGTH_SHORT).show();
@@ -168,7 +163,20 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
+    /**
+     * Proste filtrowanie listy grup
+     */
+    private void filterGroups(String query) {
+        if (allGroups == null) return;
+        List<Group> filteredGroups = new ArrayList<>();
+        for (Group group : allGroups) {
+            if (group.name.toLowerCase().contains(query.toLowerCase())
+                    || group.description.toLowerCase().contains(query.toLowerCase())) {
+                filteredGroups.add(group);
+            }
+        }
+        groupAdapter.updateData(filteredGroups);
+    }
 
     private void setupNotificationButton() {
         FrameLayout notificationCircle = findViewById(R.id.notificationCircle);
@@ -254,4 +262,12 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() - refreshing groups...");
+        loadGroups(); // Twoja metoda do pobrania listy grup i update'u adaptera
+    }
+
 }
