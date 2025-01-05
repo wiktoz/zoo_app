@@ -16,10 +16,12 @@ import java.util.List;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewHolder> {
 
-    private List<com.example.blog_app_new.CModels.Group> groups;
+    private List<Group> groups;
+    private OnGroupClickListener onGroupClickListener; // interfejs do przechwycenia kliknięć
 
-    public GroupsAdapter(List<com.example.blog_app_new.CModels.Group> groups) {
+    public GroupsAdapter(List<Group> groups, OnGroupClickListener onGroupClickListener) {
         this.groups = groups;
+        this.onGroupClickListener = onGroupClickListener;
     }
 
     @NonNull
@@ -27,14 +29,12 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     public GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.group_item, parent, false);
-        return new GroupViewHolder(view);
+        return new GroupViewHolder(view, onGroupClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         Group group = groups.get(position);
-        Log.d("GroupsAdapter", "onBindViewHolder: position=" + position
-                + ", groupName=" + group.name);
         holder.groupName.setText(group.name);
         holder.groupDescription.setText(group.description);
     }
@@ -45,17 +45,32 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     }
 
     public void updateData(List<Group> newGroups) {
-        this.groups = newGroups; // Aktualizacja danych
-        notifyDataSetChanged();  // Odświeżenie widoku RecyclerView
+        this.groups = newGroups;
+        notifyDataSetChanged();
     }
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {
         TextView groupName, groupDescription;
 
-        public GroupViewHolder(@NonNull View itemView) {
+        public GroupViewHolder(@NonNull View itemView, OnGroupClickListener onGroupClickListener) {
             super(itemView);
             groupName = itemView.findViewById(R.id.groupName);
             groupDescription = itemView.findViewById(R.id.groupDescription);
+
+            // Obsługa kliknięcia
+            itemView.setOnClickListener(v -> {
+                if (onGroupClickListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        onGroupClickListener.onGroupClick(position);
+                    }
+                }
+            });
         }
     }
+
+    public interface OnGroupClickListener {
+        void onGroupClick(int position);
+    }
 }
+

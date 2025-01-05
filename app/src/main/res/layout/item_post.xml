@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- Tytuł posta -->
+    <TextView
+        android:id="@+id/postTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tytuł posta"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Autor i/lub data posta -->
+    <TextView
+        android:id="@+id/postUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Autor: Jan Kowalski"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Treść posta -->
+    <TextView
+        android:id="@+id/postContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Treść posta"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Możesz dodać inne pola, np. zdjęcia, komentarze, datę, itp. -->
+
+</LinearLayout>

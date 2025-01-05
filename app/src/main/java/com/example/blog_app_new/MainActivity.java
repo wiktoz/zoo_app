@@ -76,7 +76,16 @@ public class MainActivity extends AppCompatActivity {
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Inicjalizujemy adapter z pustą listą
-        adapter = new GroupsAdapter(new ArrayList<>());
+        adapter = new GroupsAdapter(new ArrayList<>(), position -> {
+            // Tu obsługujemy kliknięcie w grupę
+            Group clickedGroup = allGroups.get(position);
+            Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
+
+            // Uruchamiamy GroupDetailActivity, przekazując group_id
+            Intent intent = new Intent(MainActivity.this, GroupDetailActivity.class);
+            intent.putExtra("group_id", clickedGroup.group_id);
+            startActivity(intent);
+        });
         groupsRecyclerView.setAdapter(adapter);
 
         // Ładujemy grupy z API
