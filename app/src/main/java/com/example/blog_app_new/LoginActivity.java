@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.blog_app_new.networksModels.ErrorResponse;
 import com.example.blog_app_new.networksModels.LoginRequest;
 import com.example.blog_app_new.networksModels.LoginResponse;
 import com.example.blog_app_new.network.ApiService;
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             } else {
                                 try {
-                                    LoginResponse errorResponse = new Gson().fromJson(response.errorBody().charStream(), LoginResponse.class);
+                                    ErrorResponse errorResponse = new Gson().fromJson(response.errorBody().charStream(), ErrorResponse.class);
                                     Toast.makeText(LoginActivity.this, errorResponse.message, Toast.LENGTH_SHORT).show();
                                 } catch (Exception e) {
                                     e.printStackTrace();

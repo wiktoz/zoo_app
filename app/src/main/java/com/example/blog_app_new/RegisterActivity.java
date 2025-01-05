@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.blog_app_new.networksModels.ErrorResponse;
 import com.example.blog_app_new.networksModels.RegisterRequest;
 import com.example.blog_app_new.networksModels.RegisterResponse;
 import com.example.blog_app_new.network.ApiService;
@@ -69,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                             finish();
                         }
                         else {
-                            RegisterResponse registerResponse = new Gson().fromJson(response.errorBody().charStream(), RegisterResponse.class);
+                            ErrorResponse registerResponse = new Gson().fromJson(response.errorBody().charStream(), ErrorResponse.class);
                             Toast.makeText(RegisterActivity.this, registerResponse.message, Toast.LENGTH_SHORT).show();
                         }
                     }

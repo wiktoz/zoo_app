@@ -1,6 +1,7 @@
 package com.example.blog_app_new.network;
 
 import com.example.blog_app_new.CModels.Group;
+import com.example.blog_app_new.CModels.Notification;
 import com.example.blog_app_new.networksModels.*;
 
 import java.util.List;
@@ -29,4 +30,7 @@ public interface ApiEndpoint {
 
     @GET("groups")
     Call<List<Group>> getGroups();
+
+    @GET("notifications/me")
+    Call<List<Notification>> getNotifications();
 }
