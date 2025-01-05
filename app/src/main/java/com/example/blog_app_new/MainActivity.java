@@ -40,21 +40,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Inicjalizacja bindingu
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Ustawiamy Toolbar - używamy ID toolbar (zamiast appBarMain.toolbar)
         setSupportActionBar(binding.toolbar);
 
-        // Sprawdzenie, czy użytkownik jest zalogowany
-        checkLoginStatus();
-
-        // Jeżeli użytkownik jest zalogowany, wyświetlamy listę grup
+        // Sprawdzenie logowania
+        if (!MyCookieJar.getInstance().isLogged()) {
+            Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+        Log.d(TAG, "User is logged in.");
         initGroupList();
-
     }
+
 
     /**
      * Metoda łącząca logikę wyświetlania grup z layoutem (RecyclerView, EditText)
@@ -118,20 +119,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Sprawdza, czy użytkownik jest zalogowany i ew. przekierowuje do LoginActivity
      */
-    private void checkLoginStatus() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-
-        boolean isLoggedIn = MyCookieJar.getInstance().isLogged();
-
-        if (!isLoggedIn) {
-            Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Log.d(TAG, "User is logged in.");
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
