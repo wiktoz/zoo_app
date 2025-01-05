@@ -1,6 +1,7 @@
 package com.example.blog_app_new.network;
 
 import com.example.blog_app_new.CModels.Group;
+import com.example.blog_app_new.CModels.Notification;
 import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.networksModels.*;
 
@@ -31,6 +32,9 @@ public interface ApiEndpoint {
 
     @GET("groups/my")
     Call<List<Group>> getGroups();
+
+    @GET("notifications/me")
+    Call<List<Notification>> getNotifications();
 
     @GET("groups/{group_id}")
     Call<Group> getGroupDetails(@Path("group_id") String groupId);

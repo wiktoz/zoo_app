@@ -1,11 +1,13 @@
 package com.example.blog_app_new;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,13 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.GroupsAdapter;
+import com.example.blog_app_new.CModels.Notification;
+import com.example.blog_app_new.CModels.NotificationAdapter;
 import com.example.blog_app_new.databinding.ActivityMainBinding;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.network.MyCookieJar;
-import com.example.blog_app_new.networksModels.GroupResponse;
 import com.example.blog_app_new.networksModels.LoginRequest;
 import com.example.blog_app_new.networksModels.LoginResponse;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
     // Pola przeniesione z MainViewActivity
     private RecyclerView groupsRecyclerView;
-    private GroupsAdapter adapter;
+    private GroupsAdapter groupAdapter;
+    private NotificationAdapter notificationAdapter;
+
     private List<Group> allGroups;
+    private List<Notification> notifications;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d(TAG, "User is logged in.");
         initGroupList();
+        setupNotificationButton();
     }
 
 
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Inicjalizujemy adapter z pustą listą
-        adapter = new GroupsAdapter(new ArrayList<>(), position -> {
+        groupAdapter = new GroupsAdapter(new ArrayList<>(), position -> {
             // Tu obsługujemy kliknięcie w grupę
             Group clickedGroup = allGroups.get(position);
             Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("group_id", clickedGroup.group_id);
             startActivity(intent);
         });
-        groupsRecyclerView.setAdapter(adapter);
+        groupsRecyclerView.setAdapter(groupAdapter);
 
         // Ładujemy grupy z API
         loadGroups();
@@ -118,11 +126,11 @@ public class MainActivity extends AppCompatActivity {
     private void filterGroups(String query) {
         List<Group> filteredGroups = new ArrayList<>();
         for (Group group : allGroups) {
-            if (group.name.toLowerCase().contains(query.toLowerCase())) {
+            if (group.name.toLowerCase().contains(query.toLowerCase()) || group.description.toLowerCase().contains(query.toLowerCase())) {
                 filteredGroups.add(group);
             }
         }
-        adapter.updateData(filteredGroups);
+        groupAdapter.updateData(filteredGroups);
     }
 
     /**
@@ -139,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             allGroups = response.body();
                             Log.d(TAG, "Groups loaded successfully: " + allGroups.size());
-                            adapter.updateData(allGroups); // Aktualizujemy dane adaptera po wczytaniu
+                            groupAdapter.updateData(allGroups); // Aktualizujemy dane groupAdaptera po wczytaniu
                         } else {
                             Log.e(TAG, "Failed to load groups: " + response.code());
                             Toast.makeText(MainActivity.this, "Failed to load groups", Toast.LENGTH_SHORT).show();
@@ -153,6 +161,73 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+
+    private void setupNotificationButton() {
+        FrameLayout notificationCircle = findViewById(R.id.notificationCircle);
+        TextView notificationCount = findViewById(R.id.notificationCount);
+
+        // Initialize empty list for notifications
+        List<Notification> notifications = new ArrayList<>();
+
+        // Fetch notifications from API
+        ApiService.getInstance().getApiEndpoint().getNotifications()
+                .enqueue(new Callback<List<Notification>>() {
+                    @Override
+                    public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            // Update notifications list
+                            notifications.clear();
+                            notifications.addAll(response.body());
+
+                            // Update notification count
+                            notificationCount.setText(String.valueOf(notifications.size()));
+
+                            Log.d(TAG, "Notifications loaded successfully: " + notifications.size());
+                        } else {
+                            Log.e(TAG, "Failed to load notifications: " + response.code());
+                            Toast.makeText(MainActivity.this, "Failed to load notifications", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Notification>> call, Throwable t) {
+                        Log.e(TAG, "Network error: " + t.getMessage());
+                        Toast.makeText(MainActivity.this, "Failed to load notifications due to network error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Handle button click
+        notificationCircle.setOnClickListener(v -> {
+            if (!notifications.isEmpty()) {
+                showNotificationModal(notifications);
+            } else {
+                Toast.makeText(this, "No notifications available", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void showNotificationModal(List<Notification> notifications) {
+        // Inflate the modal layout
+        View modalView = getLayoutInflater().inflate(R.layout.notification_modal, null);
+
+        // Initialize RecyclerView inside the modal
+        RecyclerView notificationRecyclerView = modalView.findViewById(R.id.notificationRecyclerView);
+        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up the adapter with actual API data
+        NotificationAdapter adapter = new NotificationAdapter(notifications);
+        notificationRecyclerView.setAdapter(adapter);
+
+        // Show modal dialog
+        new android.app.AlertDialog.Builder(this)
+                .setView(modalView)
+                .setCancelable(true)
+                .show();
+    }
+
 
 
     /**
