@@ -1,19 +1,14 @@
 package com.example.blog_app_new.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class LoginResponse {
-    private boolean login;
-    private String accessToken;
-    private String refreshToken;
+    @SerializedName("login")
+    @Expose
+    public boolean login;
 
-    public boolean isLogin() {
-        return login;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
+    @SerializedName("message")
+    @Expose
+    public String message;
 }

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.blog_app_new.models.RegisterRequest;
 import com.example.blog_app_new.models.RegisterResponse;
 import com.example.blog_app_new.network.ApiService;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,20 +62,20 @@ public class RegisterActivity extends AppCompatActivity {
                         .enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-                        RegisterResponse registerResponse = response.body();
 
                         if (response.isSuccessful()) {
+                            RegisterResponse registerResponse = response.body();
                             Toast.makeText(RegisterActivity.this, registerResponse.message, Toast.LENGTH_SHORT).show();
                             Log.d("onRegisterSuccess", registerResponse.message);
                             finish();
                         }
                         else {
+                            RegisterResponse registerResponse = new Gson().fromJson(response.errorBody().charStream(), RegisterResponse.class);
                             Toast.makeText(RegisterActivity.this, registerResponse.message, Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        Log.d("onRegisterFailure", call.toString());
                         Toast.makeText(RegisterActivity.this, "Rejestracja nie powiodła się", Toast.LENGTH_SHORT).show();
 
                     }

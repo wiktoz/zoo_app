@@ -5,21 +5,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-
-import com.example.blog_app_new.network.ApiService;
-import com.example.blog_app_new.network.TokenManager;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.blog_app_new.databinding.ActivityMainBinding;
+import com.example.blog_app_new.network.MyCookieJar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,41 +29,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Setup toolbar
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        TokenManager.getInstance(this);
-
-
-        // Clear SharedPreferences for testing purposes
-        clearLoginStatus();
-
-        // Log SharedPreferences data
-        logSharedPreferences();
-
-        // Check login status and redirect if needed
         checkLoginStatus();
     }
 
-    /**
-     * Clears the login status for testing purposes.
-     */
-    private void clearLoginStatus() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear(); // Remove all data from SharedPreferences
-        editor.apply();
-        Log.d(TAG, "Login status has been cleared.");
-    }
 
-    /**
-     * Logs SharedPreferences data for debugging purposes.
-     */
-    private void logSharedPreferences() {
-        SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
-        Log.d(TAG, "SharedPreferences -> isLoggedIn: " + isLoggedIn);
-    }
+
+
 
     /**
      * Checks whether the user is logged in and redirects to LoginActivity if not.
@@ -78,14 +45,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
 
         // Ensure the user is not logged in by default
-        boolean isLoggedIn = preferences.getBoolean("isLoggedIn", false);
-        Log.d(TAG, "Login status (default false): " + isLoggedIn);
+        boolean isLoggedIn = MyCookieJar.getInstance().isLogged();
 
         if (!isLoggedIn) {
             Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Close MainActivity
         } else {
             Log.d(TAG, "User is logged in.");
         }
