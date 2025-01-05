@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -72,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "User is logged in.");
         initGroupList();
         setupNotificationButton();
+
+        Button goToAllGroupsBtn = findViewById(R.id.goToAllGroupsBtn);
+        goToAllGroupsBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, AllGroupsActivity.class));
+        });
     }
 
 

@@ -32,7 +32,8 @@ public interface ApiEndpoint {
 
     @GET("groups/my")
     Call<List<Group>> getGroups();
-
+    @GET("groups")
+    Call<List<Group>> getAllGroups();
     @GET("notifications/me")
     Call<List<Notification>> getNotifications();
 
