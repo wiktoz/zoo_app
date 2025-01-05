@@ -1,9 +1,13 @@
 package com.example.blog_app_new.network;
 
+import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.networksModels.*;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiEndpoint {
@@ -22,4 +26,7 @@ public interface ApiEndpoint {
 
     @POST("auth/token/revoke/rtoken")
     Call<ApiResponse> revokeRefreshToken();
+
+    @GET("groups")
+    Call<List<Group>> getGroups();
 }

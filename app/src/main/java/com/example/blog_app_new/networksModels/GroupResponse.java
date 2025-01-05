@@ -1,12 +1,11 @@
-package com.example.blog_app_new.CModels;
-
+package com.example.blog_app_new.networksModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Group {
+public class GroupResponse {
     @SerializedName("group_id")
     @Expose
     public String group_id;

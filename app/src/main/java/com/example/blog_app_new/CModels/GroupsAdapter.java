@@ -34,9 +34,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         Group group = groups.get(position);
         Log.d("GroupsAdapter", "onBindViewHolder: position=" + position
-                + ", groupName=" + group.getName());
-        holder.groupName.setText(group.getName());
-        holder.groupDescription.setText(group.getDescription());
+                + ", groupName=" + group.name);
+        holder.groupName.setText(group.name);
+        holder.groupDescription.setText(group.description);
     }
 
     @Override

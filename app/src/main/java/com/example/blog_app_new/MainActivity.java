@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -18,10 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.GroupsAdapter;
 import com.example.blog_app_new.databinding.ActivityMainBinding;
+import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.network.MyCookieJar;
+import com.example.blog_app_new.networksModels.GroupResponse;
+import com.example.blog_app_new.networksModels.LoginRequest;
+import com.example.blog_app_new.networksModels.LoginResponse;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 //    "password": "strongpassword123",
 //        "email": "x@test.pl"
@@ -49,7 +59,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
 
         // Sprawdzenie, czy użytkownik jest zalogowany
-        checkLoginStatus();
+        if(!checkLoginStatus()){
+            finish();
+            return;
+        }
 
         // Jeżeli użytkownik jest zalogowany, wyświetlamy listę grup
         initGroupList();
@@ -64,11 +77,12 @@ public class MainActivity extends AppCompatActivity {
         groupsRecyclerView = findViewById(R.id.groupsRecyclerView);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Ładowanie (na razie statyczne) listy grup
-        allGroups = loadGroups();
-        Log.d(TAG, "powinny byc grupy!");
-        adapter = new GroupsAdapter(new ArrayList<>(allGroups));
+        // Inicjalizujemy adapter z pustą listą
+        adapter = new GroupsAdapter(new ArrayList<>());
         groupsRecyclerView.setAdapter(adapter);
+
+        // Ładujemy grupy z API
+        loadGroups();
 
         // Obsługa wyszukiwania
         EditText searchEditText = findViewById(R.id.searchEditText);
@@ -90,13 +104,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Filtruje grupy na podstawie tekstu wyszukiwania
      */
     private void filterGroups(String query) {
         List<Group> filteredGroups = new ArrayList<>();
         for (Group group : allGroups) {
-            if (group.getName().toLowerCase().contains(query.toLowerCase())) {
+            if (group.name.toLowerCase().contains(query.toLowerCase())) {
                 filteredGroups.add(group);
             }
         }
@@ -106,19 +121,37 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Wczytuje listę grup (na razie statycznie)
      */
-    private List<Group> loadGroups() {
-        List<Group> groups = new ArrayList<>();
-        groups.add(new Group("Grupa 1", "Opis grupy 1"));
-        groups.add(new Group("Grupa 2", "Opis grupy 2"));
-        groups.add(new Group("Grupa 3", "Opis grupy 3"));
-        groups.add(new Group("Grupa testowa", "Opis testowy"));
-        return groups;
+    private void loadGroups() {
+        // Inicjalizujemy pustą listę na wypadek braku odpowiedzi
+        allGroups = new ArrayList<>();
+
+        ApiService.getInstance().getApiEndpoint().getGroups()
+                .enqueue(new Callback<List<Group>>() {
+                    @Override
+                    public void onResponse(Call<List<Group>> call, Response<List<Group>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            allGroups = response.body();
+                            Log.d(TAG, "Groups loaded successfully: " + allGroups.size());
+                            adapter.updateData(allGroups); // Aktualizujemy dane adaptera po wczytaniu
+                        } else {
+                            Log.e(TAG, "Failed to load groups: " + response.code());
+                            Toast.makeText(MainActivity.this, "Failed to load groups", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Group>> call, Throwable t) {
+                        Log.e(TAG, "Network error: " + t.getMessage());
+                        Toast.makeText(MainActivity.this, "Failed to load groups due to network error", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     /**
      * Sprawdza, czy użytkownik jest zalogowany i ew. przekierowuje do LoginActivity
      */
-    private void checkLoginStatus() {
+    private boolean checkLoginStatus() {
         SharedPreferences preferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
 
         boolean isLoggedIn = MyCookieJar.getInstance().isLogged();
@@ -127,9 +160,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
+            return false;
         } else {
             Log.d(TAG, "User is logged in.");
+            return true;
         }
     }
 
