@@ -2,6 +2,7 @@ package com.example.blog_app_new.network;
 
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.Notification;
+import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.networksModels.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiEndpoint {
 
@@ -33,4 +35,10 @@ public interface ApiEndpoint {
 
     @GET("notifications/me")
     Call<List<Notification>> getNotifications();
+
+    @GET("groups/{group_id}")
+    Call<Group> getGroupDetails(@Path("group_id") String groupId);
+
+    @GET("groups/{group_id}/posts")
+    Call<List<Post>> getGroupPosts(@Path("group_id") String groupId);
 }
