@@ -47,5 +47,8 @@ public interface ApiEndpoint {
     Call<ApiResponse> joinGroup(@Path("group_id") String groupId);
     @GET("posts/{post_uuid}/rate")
     Call<AverageRatingResponse> getPostAverageRating(@Path("post_uuid") String postUuid);
+    @GET("posts/{post_uuid}")
+    Call<Post> getPostDetails(@Path("post_uuid") String postId);
+
 
 }

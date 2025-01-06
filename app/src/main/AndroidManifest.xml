@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="29">
         <activity
+            android:name=".PostDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".AllGroupsActivity"
             android:exported="false" />
         <activity

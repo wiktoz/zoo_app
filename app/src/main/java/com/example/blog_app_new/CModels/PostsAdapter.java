@@ -14,6 +14,24 @@ import com.example.blog_app_new.R;
 import java.util.List;
 import java.util.Map;
 
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.blog_app_new.PostDetailActivity; // Upewnij się, że nazwa i ścieżka się zgadzają
+import com.example.blog_app_new.R;
+
+import java.util.List;
+import java.util.Map;
+
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
     private List<Post> posts;
@@ -36,25 +54,37 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
 
+        // Tytuł
         holder.postTitle.setText(post.title);
 
+        // Autor + data
         String userDate = "Autor: " + post.user;
         if (post.created_at != null) {
             String[] dateParts = post.created_at.split("T");
             userDate += " • " + (dateParts.length > 1 ? dateParts[0] : post.created_at);
         }
         holder.postUserDate.setText(userDate);
+
+        // Treść
         holder.postContent.setText(post.content);
 
-        // Ustawianie średniej oceny z mapy
+        // Średnia ocena
         Double rating = postRatings.get(post.post_id);
         if (rating != null) {
-            holder.postAverageRating.setText("Średnia ocena: " + String.format("%.1f", rating));
+            holder.postAverageRating.setText("Ocena: " + String.format("%.1f", rating));
             holder.postRatingBar.setRating(rating.floatValue());
         } else {
             holder.postAverageRating.setText("Średnia ocena: brak");
             holder.postRatingBar.setRating(0);
         }
+
+        // Kliknięcie w cały item -> otwarcie PostDetailActivity z przekazaniem post_id
+        holder.itemView.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("post_id", post.post_id);
+            context.startActivity(intent);
+        });
     }
 
     @Override
