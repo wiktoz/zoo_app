@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,7 +24,7 @@
             android:ellipsize="end"
             android:maxLines="2" />
 
-        <!-- Autor i data posta w jednym wierszu -->
+        <!-- Autor i data posta -->
         <TextView
             android:id="@+id/postUserDate"
             android:layout_width="match_parent"
@@ -43,13 +42,32 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/postAverageRating"
+        <!-- Średnia ocena -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
+            android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:text="Średnia ocena: -" />
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/postAverageRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp" />
+
+            <RatingBar
+                android:id="@+id/postRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:isIndicator="true"
+                android:layout_marginStart="8dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

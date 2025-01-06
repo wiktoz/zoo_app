@@ -13,9 +13,12 @@ import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.CModels.PostsAdapter;
 import com.example.blog_app_new.network.ApiService;
+import com.example.blog_app_new.CModels.AverageRatingResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +33,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     private String groupId; // ID grupy
     private List<Post> groupPosts;
+    private Map<String, Double> postRatings = new HashMap<>(); // Przechowuje oceny dla postów
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         postsRecyclerView = findViewById(R.id.postsRecyclerView);
 
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        postsAdapter = new PostsAdapter(new ArrayList<>());
+        postsAdapter = new PostsAdapter(new ArrayList<>(), postRatings);
         postsRecyclerView.setAdapter(postsAdapter);
 
         // Pobieranie szczegółów grupy i postów
@@ -86,6 +90,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             groupPosts = response.body();
                             postsAdapter.updateData(groupPosts);
+                            fetchPostRatings();
                             Log.d(TAG, "Posts loaded for group: " + groupId);
                         } else {
                             showError("Failed to load group posts: " + response.code());
@@ -97,6 +102,26 @@ public class GroupDetailActivity extends AppCompatActivity {
                         showError("Network error: " + t.getMessage());
                     }
                 });
+    }
+
+    private void fetchPostRatings() {
+        for (Post post : groupPosts) {
+            ApiService.getInstance().getApiEndpoint().getPostAverageRating(post.post_id)
+                    .enqueue(new Callback<AverageRatingResponse>() {
+                        @Override
+                        public void onResponse(Call<AverageRatingResponse> call, Response<AverageRatingResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                postRatings.put(post.post_id, response.body().getAverage());
+                                postsAdapter.notifyDataSetChanged(); // Aktualizujemy adapter po pobraniu oceny
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<AverageRatingResponse> call, Throwable t) {
+                            Log.e(TAG, "Failed to fetch rating for post: " + post.post_id);
+                        }
+                    });
+        }
     }
 
     private void showError(String message) {

@@ -3,27 +3,25 @@ package com.example.blog_app_new.CModels;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blog_app_new.R;
-import com.example.blog_app_new.network.ApiService;
-import com.example.blog_app_new.CModels.AverageRatingResponse;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Map;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
     private List<Post> posts;
+    private Map<String, Double> postRatings; // Mapa ocen
 
-    public PostsAdapter(List<Post> posts) {
+    public PostsAdapter(List<Post> posts, Map<String, Double> postRatings) {
         this.posts = posts;
+        this.postRatings = postRatings;
     }
 
     @NonNull
@@ -48,24 +46,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.postUserDate.setText(userDate);
         holder.postContent.setText(post.content);
 
-        // Pobieranie średniej oceny dla posta
-        ApiService.getInstance().getApiEndpoint().getPostAverageRating(post.post_id)
-                .enqueue(new Callback<AverageRatingResponse>() {
-                    @Override
-                    public void onResponse(Call<AverageRatingResponse> call, Response<AverageRatingResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            double average = response.body().getAverage();
-                            holder.postAverageRating.setText("Średnia ocena: " + average);
-                        } else {
-                            holder.postAverageRating.setText("Średnia ocena: brak");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AverageRatingResponse> call, Throwable t) {
-                        holder.postAverageRating.setText("Średnia ocena: błąd");
-                    }
-                });
+        // Ustawianie średniej oceny z mapy
+        Double rating = postRatings.get(post.post_id);
+        if (rating != null) {
+            holder.postAverageRating.setText("Średnia ocena: " + String.format("%.1f", rating));
+            holder.postRatingBar.setRating(rating.floatValue());
+        } else {
+            holder.postAverageRating.setText("Średnia ocena: brak");
+            holder.postRatingBar.setRating(0);
+        }
     }
 
     @Override
@@ -80,6 +69,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView postTitle, postUserDate, postContent, postAverageRating;
+        RatingBar postRatingBar;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +77,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             postUserDate = itemView.findViewById(R.id.postUserDate);
             postContent = itemView.findViewById(R.id.postContent);
             postAverageRating = itemView.findViewById(R.id.postAverageRating);
+            postRatingBar = itemView.findViewById(R.id.postRatingBar);
         }
     }
 }
