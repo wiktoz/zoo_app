@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Inicjalizacja listy
         initGroupList();
+        setupNotificationButton();
 
         // Ewentualna obsługa przycisku do widoku "AllGroupsActivity"
         Button goToAllGroupsBtn = findViewById(R.id.goToAllGroupsBtn);
