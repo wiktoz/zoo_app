@@ -95,12 +95,12 @@ public class MainActivity extends AppCompatActivity {
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Ustawiamy adapter z pustą listą i showJoinButton = false
-        groupAdapter = new GroupsAdapter(new ArrayList<>(),
+        groupAdapter = new GroupsAdapter(
+                new ArrayList<>(),
                 new GroupsAdapter.OnGroupClickListener() {
                     @Override
-                    public void onGroupClick(int position) {
+                    public void onGroupClick(Group clickedGroup) {
                         // Kliknięcie w grupę -> szczegóły
-                        Group clickedGroup = allGroups.get(position);
                         Log.d(TAG, "Clicked group: " + clickedGroup.name + " (id=" + clickedGroup.group_id + ")");
 
                         Intent intent = new Intent(MainActivity.this, GroupDetailActivity.class);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onJoinGroupClick(int position) {
+                    public void onJoinGroupClick(Group group) {
                         // W MainActivity nie potrzebujemy "Dołącz do grupy"
                         // Zostawiamy puste (lub cokolwiek chcesz)
                     }

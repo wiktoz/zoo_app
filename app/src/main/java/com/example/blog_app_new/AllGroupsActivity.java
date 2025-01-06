@@ -56,8 +56,7 @@ public class AllGroupsActivity extends AppCompatActivity {
         // Inicjalizujemy adapter (używamy takiego samego co w MainActivity, bo wygląd itemu jest podobny)
         allGroupsAdapter = new GroupsAdapter(new ArrayList<>(), new GroupsAdapter.OnGroupClickListener() {
             @Override
-            public void onGroupClick(int position) {
-                Group clickedGroup = allGroups.get(position);
+            public void onGroupClick(Group clickedGroup) {
                 // przejście do szczegółów
                 Intent intent = new Intent(AllGroupsActivity.this, GroupDetailActivity.class);
                 intent.putExtra("group_id", clickedGroup.group_id);
@@ -65,9 +64,8 @@ public class AllGroupsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onJoinGroupClick(int position) {
+            public void onJoinGroupClick(Group groupToJoin) {
                 // Wywołanie endpointu joinGroup
-                Group groupToJoin = allGroups.get(position);
                 joinGroup(groupToJoin.group_id,0);
             }
         },

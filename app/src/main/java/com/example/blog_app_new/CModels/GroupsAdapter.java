@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Adapter do wyświetlania kafelków grup w RecyclerView.
  * Umożliwia pokazanie/ukrycie przycisku "Dołącz" (showJoinButton)
- * oraz obsługę kliknięcia w item i kliknięcia w przycisk dołączenia.
+ * oraz obsługę kliknięcia w item i w przycisk dołączenia.
  */
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewHolder> {
 
@@ -47,10 +47,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
+        // Pobieramy obiekt Group
         Group group = groups.get(position);
-        holder.groupName.setText(group.name);
-        holder.groupDescription.setText(group.description);
-        // Tutaj ewentualnie można ustawiać inne pola, np. obrazek
+        // Wywołujemy metodę bind, która ustawia pola i zapamiętuje sobie group
+        holder.bind(group);
     }
 
     @Override
@@ -70,16 +70,19 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
      * Interfejs do obsługi kliknięć: w cały item i w przycisk dołączenia.
      */
     public interface OnGroupClickListener {
-        void onGroupClick(int position);
-        void onJoinGroupClick(int position);
+        void onGroupClick(Group group);
+        void onJoinGroupClick(Group group);
     }
 
     /**
      * ViewHolder – przechowuje odniesienia do widoków w layoucie group_item
      */
     static class GroupViewHolder extends RecyclerView.ViewHolder {
-        TextView groupName, groupDescription;
-        TextView joinGroupBtn; // Przycisk "Dołącz"
+        private TextView groupName, groupDescription;
+        private TextView joinGroupBtn; // Przycisk "Dołącz"
+
+        // Zapamiętujemy obiekt Group, by mieć go w click listenerach
+        private Group currentGroup;
 
         public GroupViewHolder(@NonNull View itemView,
                                OnGroupClickListener onGroupClickListener,
@@ -91,32 +94,31 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.GroupViewH
 
             // Obsługa widoczności przycisku
             if (!showJoinButton) {
-                // W danym widoku nie chcemy przycisku
                 joinGroupBtn.setVisibility(View.GONE);
             } else {
-                // W tym widoku przycisk ma być widoczny
                 joinGroupBtn.setVisibility(View.VISIBLE);
 
                 // Kliknięcie w przycisk "Dołącz"
                 joinGroupBtn.setOnClickListener(v -> {
-                    if (onGroupClickListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            onGroupClickListener.onJoinGroupClick(position);
-                        }
+                    if (onGroupClickListener != null && currentGroup != null) {
+                        onGroupClickListener.onJoinGroupClick(currentGroup);
                     }
                 });
             }
 
             // Kliknięcie w cały kafelek (przejście do szczegółów)
             itemView.setOnClickListener(v -> {
-                if (onGroupClickListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        onGroupClickListener.onGroupClick(position);
-                    }
+                if (onGroupClickListener != null && currentGroup != null) {
+                    onGroupClickListener.onGroupClick(currentGroup);
                 }
             });
+        }
+
+        /** Ustawia pola i zapamiętuje obiekt Group */
+        public void bind(Group group) {
+            currentGroup = group;
+            groupName.setText(group.name);
+            groupDescription.setText(group.description);
         }
     }
 }
