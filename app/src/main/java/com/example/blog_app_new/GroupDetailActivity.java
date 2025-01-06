@@ -28,8 +28,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private RecyclerView postsRecyclerView;
     private PostsAdapter postsAdapter;
 
-    private String groupId; // ID wybranej grupy
-    private Group currentGroup;
+    private String groupId; // ID grupy
     private List<Post> groupPosts;
 
     @Override
@@ -37,59 +36,49 @@ public class GroupDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
 
-        // 1. Odczytujemy ID grupy z intencji
         groupId = getIntent().getStringExtra("group_id");
-        if (groupId.equals("")) {
-            finish(); // Brak właściwego ID -> zamykamy aktywność
+        if (groupId == null || groupId.isEmpty()) {
+            finish();
             return;
         }
 
-        // 2. Inicjalizacja widoków
+        // Inicjalizacja widoków
         groupNameTextView = findViewById(R.id.groupNameTextView);
         groupDescriptionTextView = findViewById(R.id.groupDescriptionTextView);
         postsRecyclerView = findViewById(R.id.postsRecyclerView);
 
-        // Ustawienie RecyclerView
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        postsAdapter = new PostsAdapter(new ArrayList<>()); // Twój adapter do postów
+        postsAdapter = new PostsAdapter(new ArrayList<>());
         postsRecyclerView.setAdapter(postsAdapter);
 
-        // 3. Pobieramy szczegóły grupy (nazwa, opis, lista ID postów)
-        loadGroupDetails();
-
-        // 4. Pobieramy pełne posty tej grupy
-        loadGroupPosts();
+        // Pobieranie szczegółów grupy i postów
+        fetchGroupDetails();
+        fetchGroupPosts();
     }
 
-    private void loadGroupDetails() {
+    private void fetchGroupDetails() {
         ApiService.getInstance().getApiEndpoint().getGroupDetails(groupId)
                 .enqueue(new Callback<Group>() {
                     @Override
                     public void onResponse(Call<Group> call, Response<Group> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            currentGroup = response.body();
-                            // Ustaw w UI nazwę i opis
-                            groupNameTextView.setText(currentGroup.name);
-                            groupDescriptionTextView.setText(currentGroup.description);
-
-                            Log.d(TAG, "Group details loaded: " + currentGroup.name
-                                    + " (Posts IDs: " + currentGroup.posts + ")");
+                            Group group = response.body();
+                            groupNameTextView.setText(group.name);
+                            groupDescriptionTextView.setText(group.description);
+                            Log.d(TAG, "Group details loaded: " + group.name);
                         } else {
-                            Log.e(TAG, "Failed to load group detail: " + response.code());
-                            Toast.makeText(GroupDetailActivity.this, "Failed to load group detail", Toast.LENGTH_SHORT).show();
+                            showError("Failed to load group details: " + response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Group> call, Throwable t) {
-                        Log.e(TAG, "Network error: " + t.getMessage());
-                        Toast.makeText(GroupDetailActivity.this, "Network error while loading group detail", Toast.LENGTH_SHORT).show();
+                        showError("Network error: " + t.getMessage());
                     }
                 });
     }
 
-    private void loadGroupPosts() {
-        // Tu używasz endpointu: GET /api/groups/<group_id>/posts
+    private void fetchGroupPosts() {
         ApiService.getInstance().getApiEndpoint().getGroupPosts(groupId)
                 .enqueue(new Callback<List<Post>>() {
                     @Override
@@ -97,18 +86,21 @@ public class GroupDetailActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             groupPosts = response.body();
                             postsAdapter.updateData(groupPosts);
-                            Log.d(TAG, "Posts loaded for group=" + groupId + " size=" + groupPosts.size());
+                            Log.d(TAG, "Posts loaded for group: " + groupId);
                         } else {
-                            Log.e(TAG, "Failed to load group posts: " + response.code());
-                            Toast.makeText(GroupDetailActivity.this, "Failed to load group posts", Toast.LENGTH_SHORT).show();
+                            showError("Failed to load group posts: " + response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<Post>> call, Throwable t) {
-                        Log.e(TAG, "Network error: " + t.getMessage());
-                        Toast.makeText(GroupDetailActivity.this, "Failed to load posts due to network error", Toast.LENGTH_SHORT).show();
+                        showError("Network error: " + t.getMessage());
                     }
                 });
+    }
+
+    private void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, message);
     }
 }

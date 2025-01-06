@@ -9,8 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blog_app_new.R;
+import com.example.blog_app_new.network.ApiService;
+import com.example.blog_app_new.CModels.AverageRatingResponse;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
@@ -23,7 +29,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflatujemy layout item_post, tworząc "kafelek" dla pojedynczego posta
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_post, parent, false);
         return new PostViewHolder(view);
@@ -33,25 +38,34 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
 
-        // Ustawiamy tytuł
         holder.postTitle.setText(post.title);
 
-        // Łączymy autora i datę w jednym wierszu
         String userDate = "Autor: " + post.user;
         if (post.created_at != null) {
-            // Proste wycięcie daty z formatu "YYYY-MM-DDT..."
-            // (warto byłoby użyć parsera i formatowania w realnym projekcie)
             String[] dateParts = post.created_at.split("T");
-            if (dateParts.length > 1) {
-                userDate += " • " + dateParts[0] + " " + dateParts[1];
-            } else {
-                userDate += " • " + post.created_at;
-            }
+            userDate += " • " + (dateParts.length > 1 ? dateParts[0] : post.created_at);
         }
         holder.postUserDate.setText(userDate);
-
-        // Ustawiamy treść
         holder.postContent.setText(post.content);
+
+        // Pobieranie średniej oceny dla posta
+        ApiService.getInstance().getApiEndpoint().getPostAverageRating(post.post_id)
+                .enqueue(new Callback<AverageRatingResponse>() {
+                    @Override
+                    public void onResponse(Call<AverageRatingResponse> call, Response<AverageRatingResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            double average = response.body().getAverage();
+                            holder.postAverageRating.setText("Średnia ocena: " + average);
+                        } else {
+                            holder.postAverageRating.setText("Średnia ocena: brak");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AverageRatingResponse> call, Throwable t) {
+                        holder.postAverageRating.setText("Średnia ocena: błąd");
+                    }
+                });
     }
 
     @Override
@@ -64,15 +78,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         notifyDataSetChanged();
     }
 
-    // Klasa ViewHolder: przechowuje referencje do widoków w item_post.xml
-    class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView postTitle, postUserDate, postContent;
+    static class PostViewHolder extends RecyclerView.ViewHolder {
+        TextView postTitle, postUserDate, postContent, postAverageRating;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             postTitle = itemView.findViewById(R.id.postTitle);
             postUserDate = itemView.findViewById(R.id.postUserDate);
             postContent = itemView.findViewById(R.id.postContent);
+            postAverageRating = itemView.findViewById(R.id.postAverageRating);
         }
     }
 }

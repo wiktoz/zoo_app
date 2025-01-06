@@ -1,5 +1,6 @@
 package com.example.blog_app_new.network;
 
+import com.example.blog_app_new.CModels.AverageRatingResponse;
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.Notification;
 import com.example.blog_app_new.CModels.Post;
@@ -44,4 +45,7 @@ public interface ApiEndpoint {
     Call<List<Post>> getGroupPosts(@Path("group_id") String groupId);
     @GET("groups/{group_id}/join")
     Call<ApiResponse> joinGroup(@Path("group_id") String groupId);
+    @GET("posts/{post_uuid}/rate")
+    Call<AverageRatingResponse> getPostAverageRating(@Path("post_uuid") String postUuid);
+
 }

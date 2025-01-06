@@ -42,5 +42,14 @@
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/postAverageRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:text="Średnia ocena: -" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
