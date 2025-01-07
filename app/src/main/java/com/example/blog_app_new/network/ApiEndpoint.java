@@ -1,6 +1,7 @@
 package com.example.blog_app_new.network;
 
 import com.example.blog_app_new.CModels.AverageRatingResponse;
+import com.example.blog_app_new.CModels.Comment;
 import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.Notification;
 import com.example.blog_app_new.CModels.Post;
@@ -55,6 +56,13 @@ public interface ApiEndpoint {
 
     @GET("posts/{post_uuid}")
     Call<Post> getPostDetails(@Path("post_uuid") String postId);
+    @GET("posts/{post_uuid}/comments")
+    Call<List<Comment>> getCommentsForPost(@Path("post_uuid") String postId);
 
+    @POST("posts/{post_uuid}/comments")
+    Call<ApiResponse> addCommentToPost(@Path("post_uuid") String postId, @Body CommentRequest commentRequest);
+
+    @POST("posts/{post_uuid}/rate")
+    Call<ApiResponse> ratePost(@Path("post_uuid") String postId, @Body RateRequest rateRequest);
 
 }

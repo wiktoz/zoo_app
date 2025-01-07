@@ -135,4 +135,12 @@ public class GroupDetailActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Log.e(TAG, message);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Gdy powracamy do ekranu, ponownie pobieramy dane grupy i posty
+        fetchGroupDetails();
+        fetchGroupPosts();
+    }
+
 }

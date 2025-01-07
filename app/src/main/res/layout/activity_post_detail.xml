@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Tytuł posta -->
@@ -13,17 +13,13 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="8dp"
-        android:text="Tytuł posta" />
+        android:layout_marginBottom="8dp" />
 
-    <!-- Autor posta + data -->
+    <!-- Autor i data posta -->
     <TextView
         android:id="@+id/postDetailUserDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="14sp"
         android:layout_marginBottom="8dp" />
 
     <!-- Treść posta -->
@@ -31,10 +27,39 @@
         android:id="@+id/postDetailContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Treść posta..."
-        android:textSize="14sp"
-        android:textColor="@android:color/black" />
+        android:layout_marginBottom="16dp" />
 
-    <!-- Ewentualnie ocena / komentarze / zdjęcia itd. -->
+    <!-- RecyclerView z komentarzami -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Pole do wpisania komentarza -->
+    <EditText
+        android:id="@+id/commentContentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Napisz komentarz..."
+        android:layout_marginBottom="8dp" />
+
+    <!-- RatingBar do oceny posta -->
+    <RatingBar
+        android:id="@+id/commentRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="0"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Przycisk dodawania komentarza -->
+    <Button
+        android:id="@+id/addCommentButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dodaj komentarz" />
 
 </LinearLayout>
