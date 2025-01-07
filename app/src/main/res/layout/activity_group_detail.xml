@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp"
-    android:background="@color/white"> <!-- np. lekko szary kolor tła -->
+    android:background="@color/white">
 
     <!-- Nazwa grupy -->
     <TextView
@@ -25,7 +25,35 @@
         android:textColor="@android:color/black"
         android:paddingBottom="8dp" />
 
-    <!-- RecyclerView na posty w tej grupie -->
+    <!-- Szablon nowego posta -->
+    <LinearLayout
+        android:id="@+id/newPostTemplate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@drawable/template_background"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_add_post"
+            android:contentDescription="@string/add_post_icon"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_new_post"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- RecyclerView na posty -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postsRecyclerView"
         android:layout_width="match_parent"

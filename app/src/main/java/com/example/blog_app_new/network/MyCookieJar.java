@@ -39,4 +39,8 @@ public class MyCookieJar implements CookieJar {
     public boolean isLogged() {
         return cookieStorage.isLogged();
     }
+
+    public String getCSRFToken() {
+        return cookieStorage.getCSRFToken();
+    }
 }

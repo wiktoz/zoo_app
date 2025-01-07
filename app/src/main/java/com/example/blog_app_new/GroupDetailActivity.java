@@ -1,5 +1,6 @@
 package com.example.blog_app_new;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -39,6 +40,12 @@ public class GroupDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
+        findViewById(R.id.newPostTemplate).setOnClickListener(v -> {
+            Intent intent = new Intent(GroupDetailActivity.this, AddPostActivity.class);
+            intent.putExtra("group_id", groupId);
+            startActivity(intent);
+            finish();
+        });
 
         groupId = getIntent().getStringExtra("group_id");
         if (groupId == null || groupId.isEmpty()) {

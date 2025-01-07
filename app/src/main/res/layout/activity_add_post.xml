@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Pole na tytuł posta -->
+        <EditText
+            android:id="@+id/titleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tytuł"
+            android:textColor="#000000"
+            android:textColorHint="#888888"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp"
+            android:textSize="18sp" />
+
+        <!-- Pole na treść posta -->
+        <EditText
+            android:id="@+id/contentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Treść"
+            android:gravity="top"
+            android:padding="8dp"
+            android:textColor="#000000"
+            android:textColorHint="#888888"
+            android:background="@drawable/edit_text_background"
+            android:textSize="16sp"
+            android:minLines="6"
+            android:layout_marginTop="12dp" />
+
+        <!-- Przyciski do dodawania zdjęć -->
+        <Button
+            android:id="@+id/addImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dodaj zdjęcia"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#007BFF"
+            android:textColor="#FFFFFF" />
+
+        <!-- Widok siatki zdjęć -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="#F5F5F5"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
+        <!-- Przycisk do przesłania posta -->
+        <Button
+            android:id="@+id/submitPostButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dodaj post"
+            android:backgroundTint="#28A745"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

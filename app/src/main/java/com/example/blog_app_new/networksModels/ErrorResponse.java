@@ -8,4 +8,8 @@ public class ErrorResponse {
     @SerializedName("message")
     @Expose
     public String message;
+
+    @SerializedName("msg")
+    @Expose
+    public String msg;
 }

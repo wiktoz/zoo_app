@@ -25,6 +25,7 @@ public class CookieDataStore {
     public void storeCookies(List<Cookie> cookies) {
         for (Cookie cookie : cookies) {
             String domain = cookie.domain();
+            Log.d("TokenManagement","Storing cookie for domain: " + domain);
 
             // Retrieve existing cookies for the domain
             List<Cookie> existingCookies = cookieStore.getOrDefault(domain, new ArrayList<>());
@@ -43,6 +44,19 @@ public class CookieDataStore {
             existingCookies.add(cookie);
             cookieStore.put(domain, existingCookies);
         }
+    }
+
+    public String getCSRFToken() {
+        for (List<Cookie> cookies : cookieStore.values()) {
+            Iterator<Cookie> iterator = cookies.iterator();
+            while (iterator.hasNext()) {
+                Cookie cookie = iterator.next();
+                if (cookie.name().equals("csrf_access_token")) {
+                    return cookie.value();
+                }
+            }
+        }
+        return "";
     }
 
     /**

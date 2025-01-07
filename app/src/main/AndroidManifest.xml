@@ -45,6 +45,8 @@
             </intent-filter>
         </activity> <!-- Register Activity -->
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".AddPostActivity" />
+
     </application>
 
 </manifest>
