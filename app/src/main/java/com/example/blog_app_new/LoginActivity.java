@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if (loginResponse != null && loginResponse.login) {
                                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                                     // Przekierowanie do widoku "O mnie"
-                                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                 } else {

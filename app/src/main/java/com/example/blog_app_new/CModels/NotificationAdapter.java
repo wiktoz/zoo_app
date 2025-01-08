@@ -1,6 +1,7 @@
 package com.example.blog_app_new.CModels;
 
-import android.util.Log;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.blog_app_new.PostDetailActivity;
 import com.example.blog_app_new.R;
 
 import java.util.List;
@@ -36,6 +38,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         // Set content and timestamp
         holder.notificationContent.setText(notification.content);
         holder.notificationTimestamp.setText(notification.created_at);
+
+        // Handle click on notification
+        holder.itemView.setOnClickListener(v -> {
+            Context context = holder.itemView.getContext();
+            Intent intent = new Intent(context, PostDetailActivity.class);
+
+            // Pass the post_id to PostDetailActivity
+            intent.putExtra("post_id", notification.post_id);
+
+            context.startActivity(intent);
+        });
     }
 
     @Override
