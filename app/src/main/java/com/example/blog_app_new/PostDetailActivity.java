@@ -158,7 +158,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     public void onResponse(Call<Post> call, Response<Post> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Post post = response.body();
-                            Log.d(TAG, "Post details loaded: " + post.title);
+                            Log.d(TAG, "Post details loaded: " + post.toString());
                             showPostDetails(post);
                         } else {
                             showError("Failed to load post details. Code: " + response.code());

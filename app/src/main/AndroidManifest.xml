@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="29">
         <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity
@@ -46,7 +49,6 @@
         </activity> <!-- Register Activity -->
         <activity android:name=".RegisterActivity" />
         <activity android:name=".AddPostActivity" />
-
     </application>
 
 </manifest>

@@ -138,7 +138,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Gdy powracamy do ekranu, ponownie pobieramy dane grupy i posty
+
         fetchGroupDetails();
         fetchGroupPosts();
     }

@@ -52,4 +52,21 @@ public class Post {
     @SerializedName("notifications")
     @Expose
     public List<String> notifications;
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "post_id='" + post_id + '\'' +
+                ", group_id='" + group_id + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", user='" + user + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", updated_at='" + updated_at + '\'' +
+                ", photos=" + photos +
+                ", comments=" + comments +
+                ", ratings=" + ratings +
+                ", notifications=" + notifications +
+                '}';
+    }
 }

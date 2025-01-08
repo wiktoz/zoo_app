@@ -6,6 +6,7 @@ import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.Notification;
 import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.networksModels.*;
+import com.example.blog_app_new.networksModels.User;
 
 import java.util.List;
 
@@ -64,5 +65,9 @@ public interface ApiEndpoint {
 
     @POST("posts/{post_uuid}/rate")
     Call<ApiResponse> ratePost(@Path("post_uuid") String postId, @Body RateRequest rateRequest);
+    @GET("users/me")
+    Call<User> getUserDetails();
+    @POST("auth/token/revoke/atoken")
+    Call<Void> logout();
 
 }
