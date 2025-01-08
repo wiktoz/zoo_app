@@ -56,7 +56,7 @@ public interface ApiEndpoint {
 
     @GET("posts/{post_uuid}")
     Call<Post> getPostDetails(@Path("post_uuid") String postId);
-    @GET("posts/{post_uuid}/comments")
+    @GET("posts/{post_uuid}/commentsName")
     Call<List<Comment>> getCommentsForPost(@Path("post_uuid") String postId);
 
     @POST("posts/{post_uuid}/comments")

@@ -179,7 +179,10 @@ public class PostDetailActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             commentList = response.body();
                             commentsAdapter.updateData(commentList);
-                        } else {
+                            for (Comment comment: commentList) {
+                                Log.d(TAG, "Post details: " + comment.toString());
+                            }
+                                                   } else {
                             showError("Failed to load comments. Code: " + response.code());
                         }
                     }
