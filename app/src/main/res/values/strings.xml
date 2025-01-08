@@ -12,5 +12,6 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="add_new_post">Dodaj nowy post</string>
     <string name="add_post_icon">Dodaj nowy post</string>
+    <string name="user_icon_description">Ikona użytkownika</string>
 
 </resources>

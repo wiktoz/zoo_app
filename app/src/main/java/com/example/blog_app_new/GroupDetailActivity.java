@@ -15,6 +15,7 @@ import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.CModels.PostsAdapter;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.CModels.AverageRatingResponse;
+import com.example.blog_app_new.utils.ToolbarUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +32,9 @@ public class GroupDetailActivity extends AppCompatActivity {
     private TextView groupNameTextView, groupDescriptionTextView;
     private RecyclerView postsRecyclerView;
     private PostsAdapter postsAdapter;
-
     private String groupId; // ID grupy
+
+    private String groupName;
     private List<Post> groupPosts;
     private Map<String, Double> postRatings = new HashMap<>(); // Przechowuje oceny dla postów
 
@@ -40,12 +42,8 @@ public class GroupDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
-        findViewById(R.id.newPostTemplate).setOnClickListener(v -> {
-            Intent intent = new Intent(GroupDetailActivity.this, AddPostActivity.class);
-            intent.putExtra("group_id", groupId);
-            startActivity(intent);
-            finish();
-        });
+
+
 
         groupId = getIntent().getStringExtra("group_id");
         if (groupId == null || groupId.isEmpty()) {
@@ -58,6 +56,9 @@ public class GroupDetailActivity extends AppCompatActivity {
         groupDescriptionTextView = findViewById(R.id.groupDescriptionTextView);
         postsRecyclerView = findViewById(R.id.postsRecyclerView);
 
+        postsRecyclerView = findViewById(R.id.postsRecyclerView);
+
+
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         postsAdapter = new PostsAdapter(new ArrayList<>(), postRatings);
         postsRecyclerView.setAdapter(postsAdapter);
@@ -65,6 +66,15 @@ public class GroupDetailActivity extends AppCompatActivity {
         // Pobieranie szczegółów grupy i postów
         fetchGroupDetails();
         fetchGroupPosts();
+
+        findViewById(R.id.newPostTemplate).setOnClickListener(v -> {
+            Intent intent = new Intent(GroupDetailActivity.this, AddPostActivity.class);
+            intent.putExtra("group_id", groupId);
+            intent.putExtra("group_name", groupName);
+
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void fetchGroupDetails() {
@@ -74,8 +84,16 @@ public class GroupDetailActivity extends AppCompatActivity {
                     public void onResponse(Call<Group> call, Response<Group> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Group group = response.body();
-                            groupNameTextView.setText(group.name);
+
                             groupDescriptionTextView.setText(group.description);
+                            ToolbarUtils.setupToolbar(GroupDetailActivity.this, R.id.custom_toolbar, "Grupa: "+ group.name);
+                            groupName = group.name;
+
+
+                            if (getSupportActionBar() != null) {
+                                getSupportActionBar().setTitle(group.name);
+                            }
+
                             Log.d(TAG, "Group details loaded: " + group.name);
                         } else {
                             showError("Failed to load group details: " + response.code());

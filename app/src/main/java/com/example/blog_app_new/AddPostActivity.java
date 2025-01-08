@@ -21,6 +21,7 @@ import com.example.blog_app_new.networksModels.LoginRequest;
 import com.example.blog_app_new.networksModels.LoginResponse;
 import com.example.blog_app_new.networksModels.PostRequest;
 import com.example.blog_app_new.utils.ImageConverter;
+import com.example.blog_app_new.utils.ToolbarUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class AddPostActivity extends AppCompatActivity {
 
     private ImagesAdapter imagesAdapter;
     private String groupId;
+
+    private String groupName;
     private final List<Uri> selectedImages = new ArrayList<>();
 
     private final ActivityResultLauncher<String> imagePickerLauncher =
@@ -59,12 +62,17 @@ public class AddPostActivity extends AppCompatActivity {
         imagesRecyclerView = findViewById(R.id.imagesRecyclerView);
 
         groupId = getIntent().getStringExtra("group_id");
+        groupName = getIntent().getStringExtra("group_name");
+
 
         if (groupId == null || groupId.isEmpty()) {
             Toast.makeText(this, "Group ID is missing!", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity if the group ID is not available
             return;
         }
+
+        ToolbarUtils.setupToolbar(AddPostActivity.this, R.id.custom_toolbar, "Nowy post w " + groupName);
+
 
         // Ustawienie adaptera dla RecyclerView
         imagesAdapter = new ImagesAdapter(selectedImages);

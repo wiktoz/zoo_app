@@ -26,8 +26,7 @@ import com.example.blog_app_new.CModels.NotificationAdapter;
 import com.example.blog_app_new.databinding.ActivityMainBinding;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.network.MyCookieJar;
-import com.example.blog_app_new.networksModels.LoginRequest;
-import com.example.blog_app_new.networksModels.LoginResponse;
+import com.example.blog_app_new.utils.ToolbarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +41,13 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
     // RecyclerView i adapter
     private RecyclerView groupsRecyclerView;
     private GroupsAdapter groupAdapter;
-    private NotificationAdapter notificationAdapter;
 
     private List<Group> allGroups;
-    private List<Notification> notifications;
 
 
 
@@ -63,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
-
-        // Sprawdzenie logowania
         if (!MyCookieJar.getInstance().isLogged()) {
             Log.d(TAG, "User is not logged in. Redirecting to LoginActivity...");
             startActivity(new Intent(this, LoginActivity.class));
@@ -74,17 +67,14 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d(TAG, "User is logged in.");
 
-        // Inicjalizacja listy
         initGroupList();
         setupNotificationButton();
 
-        // Ewentualna obsługa przycisku do widoku "AllGroupsActivity"
         Button goToAllGroupsBtn = findViewById(R.id.goToAllGroupsBtn);
         goToAllGroupsBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, AllGroupsActivity.class));
         });
 
-        // Ewentualna obsługa powiadomień – pomijamy dla uproszczenia
     }
 
     /**
@@ -249,20 +239,6 @@ public class MainActivity extends AppCompatActivity {
      * Sprawdza, czy użytkownik jest zalogowany i ew. przekierowuje do LoginActivity
      */
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Dodanie menu do action bara
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        // Jeśli nie masz w layoutach nav_host_fragment_content_main, usuń poniższe linie
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
 
     @Override
     protected void onResume() {

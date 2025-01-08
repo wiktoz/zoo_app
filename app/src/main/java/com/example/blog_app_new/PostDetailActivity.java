@@ -16,6 +16,7 @@ import com.example.blog_app_new.CModels.Comment;
 import com.example.blog_app_new.CModels.CommentsAdapter;
 import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.network.ApiService;
+import com.example.blog_app_new.utils.ToolbarUtils;
 import com.example.blog_app_new.networksModels.ApiResponse;
 import com.example.blog_app_new.networksModels.CommentRequest;
 import com.example.blog_app_new.networksModels.RateRequest;
@@ -30,6 +31,7 @@ import retrofit2.Response;
 public class PostDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailActivity";
+    private String groupName;
 
     private TextView postDetailTitle, postDetailUserDate, postDetailContent;
     // ewentualnie inne pola: rating, photos, comments...
@@ -55,6 +57,8 @@ public class PostDetailActivity extends AppCompatActivity {
             finish();
             return;
         }
+        groupName = getIntent().getStringExtra("group_name");
+        ToolbarUtils.setupToolbar(PostDetailActivity.this, R.id.custom_toolbar, "Post w " + groupName);
 
         initViews();
         fetchPostDetails(postId);
@@ -159,6 +163,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             Post post = response.body();
                             Log.d(TAG, "Post details loaded: " + post.title);
+
                             showPostDetails(post);
                         } else {
                             showError("Failed to load post details. Code: " + response.code());

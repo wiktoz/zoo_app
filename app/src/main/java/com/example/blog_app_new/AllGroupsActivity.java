@@ -14,6 +14,7 @@ import com.example.blog_app_new.CModels.Group;
 import com.example.blog_app_new.CModels.GroupsAdapter;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.networksModels.ApiResponse;
+import com.example.blog_app_new.utils.ToolbarUtils;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -38,9 +39,8 @@ public class AllGroupsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_groups);
+        ToolbarUtils.setupToolbar(AllGroupsActivity.this, R.id.custom_toolbar, "Wszystkie grupy");
 
-        // Ustawiamy Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.toolbarAllGroups);
 
         initAllGroupsList();
     }
@@ -60,6 +60,8 @@ public class AllGroupsActivity extends AppCompatActivity {
                 // przejście do szczegółów
                 Intent intent = new Intent(AllGroupsActivity.this, GroupDetailActivity.class);
                 intent.putExtra("group_id", clickedGroup.group_id);
+                intent.putExtra("group_name", clickedGroup.name);
+
                 startActivity(intent);
             }
 

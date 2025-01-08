@@ -7,15 +7,9 @@
     android:padding="12dp"
     android:background="@color/white">
 
-    <!-- Nazwa grupy -->
-    <TextView
-        android:id="@+id/groupNameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        android:paddingBottom="4dp"/>
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/custom_toolbar" />
 
     <!-- Opis grupy -->
     <TextView
