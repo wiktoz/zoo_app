@@ -5,22 +5,18 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!-- AppBar z Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.Blog_app_new.AppBarOverlay">
+        android:elevation="4dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Blog_app_new.PopupOverlay"
-            app:title="Blog_app_new"
-            app:titleTextColor="@android:color/white"
-            app:menu="@menu/main" />
-
+            app:title="Grupy"
+            app:titleTextColor="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
 

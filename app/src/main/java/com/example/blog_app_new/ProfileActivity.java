@@ -121,11 +121,6 @@ public class ProfileActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Log.e(TAG, message);
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflating menu to toolbar
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+
 
 }

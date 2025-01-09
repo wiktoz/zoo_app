@@ -12,12 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,8 +24,6 @@ import com.example.blog_app_new.CModels.NotificationAdapter;
 import com.example.blog_app_new.databinding.ActivityMainBinding;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.network.MyCookieJar;
-import com.example.blog_app_new.networksModels.LoginRequest;
-import com.example.blog_app_new.networksModels.LoginResponse;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
@@ -45,7 +39,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
     // RecyclerView i adapter
