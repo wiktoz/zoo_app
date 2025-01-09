@@ -18,11 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blog_app_new.CModels.Comment;
 import com.example.blog_app_new.CModels.CommentsAdapter;
+import com.example.blog_app_new.CModels.PhotosAdapter;
 import com.example.blog_app_new.CModels.Post;
 import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.networksModels.ApiResponse;
 import com.example.blog_app_new.networksModels.CommentRequest;
 import com.example.blog_app_new.networksModels.RateRequest;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,8 @@ public class PostDetailActivity extends AppCompatActivity {
     private EditText commentContentEditText;
     private RatingBar commentRatingBar;
     private Button addCommentButton;
+    private RecyclerView photosRecyclerView;
+    private PhotosAdapter photosAdapter;
 
 
     @Override
@@ -79,8 +83,26 @@ public class PostDetailActivity extends AppCompatActivity {
 
         addCommentButton.setOnClickListener(v -> submitCommentAndRating());
 
-        // ewentualnie inne findViewById
+        // RecyclerView dla zdjęć
+        photosRecyclerView = findViewById(R.id.photosRecyclerView);
+        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 kolumny
+        photosAdapter = new PhotosAdapter(new ArrayList<>());
+        photosRecyclerView.setAdapter(photosAdapter);
     }
+
+    private void showPostDetails(Post post) {
+        postDetailTitle.setText(post.title);
+
+        // Formatowanie daty i użytkownika
+        String userDateString = post.user + " | " + post.created_at;
+        postDetailUserDate.setText(userDateString);
+
+        postDetailContent.setText(post.content);
+
+        // Ustawienie zdjęć w adapterze
+        photosAdapter.updatePhotos(post.photos);
+    }
+
     private void submitCommentAndRating() {
         String content = commentContentEditText.getText().toString().trim();
         float ratingValue = commentRatingBar.getRating(); // 0–5
@@ -141,6 +163,7 @@ public class PostDetailActivity extends AppCompatActivity {
         ApiService.getInstance().getApiEndpoint()
                 .addCommentToPost(postId, commentRequest)
                 .enqueue(callback);
+        onResume();
     }
 
     private void ratePost(int value, Callback<ApiResponse> callback) {
@@ -154,15 +177,22 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void fetchPostDetails(String postId) {
-        // Zakładam, że w ApiEndpoint masz np.:
-        // @GET("posts/{post_uuid}")  Call<Post> getPostDetails(@Path("post_uuid") String postId);
         ApiService.getInstance().getApiEndpoint().getPostDetails(postId)
                 .enqueue(new Callback<Post>() {
                     @Override
                     public void onResponse(Call<Post> call, Response<Post> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Post post = response.body();
-                            Log.d(TAG, "Post details loaded: " + post.toString());
+                            // Logowanie szczegółowych danych posta
+                            Log.d(TAG, "Post details fetched successfully:");
+                            Log.d(TAG, "ID: " + post.post_id);
+                            Log.d(TAG, "Title: " + post.title);
+                            Log.d(TAG, "Content: " + post.content);
+                            Log.d(TAG, "Content: " + post.photos);
+                            Log.d(TAG, "User: " + post.user);
+                            Log.d(TAG, "Created At: " + post.created_at);
+                            Log.d(TAG, "Updated At: " + post.updated_at);
+
                             showPostDetails(post);
                         } else {
                             showError("Failed to load post details. Code: " + response.code());
@@ -175,6 +205,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void fetchComments() {
         ApiService.getInstance().getApiEndpoint().getCommentsForPost(postId)
                 .enqueue(new Callback<List<Comment>>() {
@@ -183,10 +214,17 @@ public class PostDetailActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             commentList = response.body();
                             commentsAdapter.updateData(commentList);
-                            for (Comment comment: commentList) {
-                                Log.d(TAG, "Post details: " + comment.toString());
+
+                            // Logowanie szczegółowych danych komentarzy
+                            Log.d(TAG, "Comments fetched successfully. Total: " + commentList.size());
+                            for (Comment comment : commentList) {
+                                Log.d(TAG, "Comment ID: " + comment.comment_id);
+                                Log.d(TAG, "Post ID: " + comment.post_id);
+                                Log.d(TAG, "User ID: " + comment.user_id);
+                                Log.d(TAG, "Content: " + comment.content);
+                                Log.d(TAG, "Created At: " + comment.created_at);
                             }
-                                                   } else {
+                        } else {
                             showError("Failed to load comments. Code: " + response.code());
                         }
                     }
@@ -196,18 +234,6 @@ public class PostDetailActivity extends AppCompatActivity {
                         showError("Network error while loading comments: " + t.getMessage());
                     }
                 });
-    }
-
-    private void showPostDetails(Post post) {
-        postDetailTitle.setText(post.title);
-
-        // ewentualnie ładne formatowanie daty
-        String userDateString = post.user + " | " + post.created_at;
-        postDetailUserDate.setText(userDateString);
-
-        postDetailContent.setText(post.content);
-
-        // jeśli chcesz jeszcze oceny, zdjęcia, komentarze - wyświetl lub pobierz
     }
 
     private void showError(String msg) {
