@@ -131,10 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
-            // Otwórz ProfileActivity
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
