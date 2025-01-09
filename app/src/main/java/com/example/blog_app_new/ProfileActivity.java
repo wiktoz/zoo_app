@@ -3,11 +3,14 @@ package com.example.blog_app_new;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.blog_app_new.network.ApiService;
@@ -118,4 +121,11 @@ public class ProfileActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Log.e(TAG, message);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflating menu to toolbar
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
 }
