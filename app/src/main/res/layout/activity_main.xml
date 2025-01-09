@@ -30,12 +30,11 @@
 
         <Button
             android:id="@+id/goToAllGroupsBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zobacz wszystkie grupy"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginBottom="8dp"
+            android:text="Zobacz wszystkie grupy" />
 
-        <!-- Pasek wyszukiwania -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

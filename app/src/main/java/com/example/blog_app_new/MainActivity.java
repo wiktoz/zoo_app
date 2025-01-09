@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ import com.example.blog_app_new.network.ApiService;
 import com.example.blog_app_new.network.MyCookieJar;
 import com.example.blog_app_new.networksModels.LoginRequest;
 import com.example.blog_app_new.networksModels.LoginResponse;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Sprawdzenie logowania
         if (!MyCookieJar.getInstance().isLogged()) {
@@ -232,8 +235,13 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView notificationRecyclerView = modalView.findViewById(R.id.notificationRecyclerView);
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up the adapter with actual API data
-        NotificationAdapter adapter = new NotificationAdapter(notifications);
+        // Set up the adapter with a click listener
+        NotificationAdapter adapter = new NotificationAdapter(notifications, notification -> {
+            // Handle notification click
+            Intent intent = new Intent(MainActivity.this, PostDetailActivity.class);
+            intent.putExtra("post_id", notification.post_id); // Assuming getPostId() provides the ID
+            startActivity(intent);
+        });
         notificationRecyclerView.setAdapter(adapter);
 
         // Show modal dialog
@@ -249,26 +257,29 @@ public class MainActivity extends AppCompatActivity {
      * Sprawdza, czy użytkownik jest zalogowany i ew. przekierowuje do LoginActivity
      */
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Dodanie menu do action bara
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        // Jeśli nie masz w layoutach nav_host_fragment_content_main, usuń poniższe linie
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume() - refreshing groups...");
         loadGroups(); // Twoja metoda do pobrania listy grup i update'u adaptera
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_profile) {
+            // Otwórz ProfileActivity
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

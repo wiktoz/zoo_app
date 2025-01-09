@@ -1,5 +1,6 @@
 package com.example.blog_app_new.CModels;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,16 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private final List<Notification> notifications;
+    private final OnNotificationClickListener listener;
 
-    public NotificationAdapter(List<Notification> notifications) {
+    // Interface for handling notification clicks
+    public interface OnNotificationClickListener {
+        void onNotificationClick(Notification notification);
+    }
+
+    public NotificationAdapter(List<Notification> notifications, OnNotificationClickListener listener) {
         this.notifications = notifications;
+        this.listener = listener;
     }
 
     @NonNull
@@ -36,6 +44,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         // Set content and timestamp
         holder.notificationContent.setText(notification.content);
         holder.notificationTimestamp.setText(notification.created_at);
+
+        // Set click listener for the item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNotificationClick(notification);
+            }
+        });
     }
 
     @Override

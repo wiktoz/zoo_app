@@ -39,9 +39,6 @@ public class AllGroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_groups);
 
-        // Ustawiamy Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.toolbarAllGroups);
-
         initAllGroupsList();
     }
 
