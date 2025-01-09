@@ -3,9 +3,12 @@ package com.example.blog_app_new;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -141,6 +144,23 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         fetchGroupDetails();
         fetchGroupPosts();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflating menu to toolbar
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_profile) {
+            // Przejście do widoku profilu
+            Intent intent = new Intent(GroupDetailActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

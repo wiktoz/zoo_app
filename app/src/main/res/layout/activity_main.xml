@@ -9,16 +9,20 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp">
+        android:theme="@style/Theme.Blog_app_new.AppBarOverlay">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:title="Grupy"
-            app:titleTextColor="@android:color/white" />
+            app:popupTheme="@style/Theme.Blog_app_new.PopupOverlay"
+            app:title="Blog_app_new"
+            app:titleTextColor="@android:color/white"
+            app:menu="@menu/main" />
+
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <!-- Główna zawartość -->
     <LinearLayout
