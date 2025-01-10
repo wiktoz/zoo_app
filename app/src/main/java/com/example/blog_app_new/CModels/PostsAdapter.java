@@ -74,7 +74,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.postAverageRating.setText("Ocena: " + String.format("%.1f", rating));
             holder.postRatingBar.setRating(rating.floatValue());
         } else {
-            holder.postAverageRating.setText("Średnia ocena: brak");
+            holder.postAverageRating.setText("Brak ocen");
             holder.postRatingBar.setRating(0);
         }
 
