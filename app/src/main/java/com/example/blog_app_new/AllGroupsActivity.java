@@ -128,7 +128,7 @@ public class AllGroupsActivity extends AppCompatActivity {
         if (allGroups == null) return;
         List<Group> filtered = new ArrayList<>();
         for (Group g : allGroups) {
-            if (g.name.toLowerCase().contains(query.toLowerCase() || g.description.toLowerCase().contains(query.toLowerCase() )
+            if (g.name.toLowerCase().contains(query.toLowerCase())
                     || g.description.toLowerCase().contains(query.toLowerCase())) {
                 filtered.add(g);
             }
